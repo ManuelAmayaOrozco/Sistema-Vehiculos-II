@@ -16,7 +16,7 @@ open class Vehiculo (val marca: String,
     }
 
     open fun realizaViaje(distancia: Int): Int {
-        val kilometrosRecorribles = (combustibleActual * 10).toInt()
+        val kilometrosRecorribles = calcularAutonomia()
         if (distancia <= kilometrosRecorribles) {
             kilometrosActuales += distancia
             val kilometrosRecorridos = kilometrosRecorribles - distancia
@@ -48,8 +48,8 @@ open class Vehiculo (val marca: String,
         }
     }
 
-    open fun calcularAutonomia(): Float {
-        val autonomia = capacidadCombustible * 10
+    open fun calcularAutonomia(): Int {
+        val autonomia = (capacidadCombustible * 10).toInt()
         return autonomia
     }
 }
