@@ -11,45 +11,40 @@ abstract class Vehiculo (val marca: String,
     }
 
     open fun obtenerInformacion(): String {
-        val kilometrosRecorribles = combustibleActual * 10
-        return "El vehículo puede recorrer ${"%2f".format(kilometrosRecorribles)}km actualmente."
+        return "El vehículo puede recorrer ${calcularAutonomia()}km actualmente."
     }
 
     open fun realizaViaje(distancia: Int): Int {
         val kilometrosRecorribles = calcularAutonomia()
-        if (distancia <= kilometrosRecorribles) {
+        return if (distancia <= kilometrosRecorribles) {
             kilometrosActuales += distancia
             val kilometrosRecorridos = kilometrosRecorribles - distancia
             combustibleActual -= (kilometrosRecorridos / 10)
             println("Viaje realizado con exito.")
-            return 0
-        }
-        else {
+            0
+        } else {
             val kilometrosRestantes = distancia - kilometrosRecorribles
             val kilometrosRecorridos = distancia - kilometrosRestantes
             kilometrosActuales += kilometrosRecorridos
             combustibleActual -= (kilometrosRecorridos / 10)
-            println("Viaje no completado. (Distancia restante = ${kilometrosRestantes}km")
-            return kilometrosRestantes
+            println("Viaje no completado. (Distancia restante = ${kilometrosRestantes}km)")
+            kilometrosRestantes
         }
     }
 
-    open fun repostar(cantidad: Float): Float {
-        val resultadoRepostaje = combustibleActual + cantidad
-        if (resultadoRepostaje > combustibleActual) {
-            val cantidadRepostada = capacidadCombustible - cantidad
-            combustibleActual += cantidadRepostada
-            return cantidadRepostada
-        }
-        else{
+    open fun repostar(cantidad: Float = 0f): Float {
+        return if (cantidad <= 0 || cantidad + combustibleActual > capacidadCombustible) {
             val cantidadRepostada = capacidadCombustible - combustibleActual
-            combustibleActual += cantidadRepostada
-            return cantidadRepostada
+            combustibleActual = capacidadCombustible
+            cantidadRepostada
+        } else{
+            combustibleActual += cantidad
+            cantidad
         }
     }
 
     open fun calcularAutonomia(): Int {
-        val autonomia = (capacidadCombustible * 10).toInt()
+        val autonomia = (combustibleActual * 10).toInt()
         return autonomia
     }
 }

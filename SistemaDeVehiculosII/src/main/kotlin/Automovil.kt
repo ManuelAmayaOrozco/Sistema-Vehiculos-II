@@ -9,8 +9,8 @@ class Automovil (marca: String,
     override fun toString(): String {
         return "Automovil: (Marca = $marca, Modelo = $modelo, Capacidad Combustible = ${capacidadCombustible}l," +
                 " Combustible Actual = ${"%2f".format(combustibleActual)}l, Kilómetros Actuales =" +
-                " ${kilometrosActuales}km, Tipo = $tipo, Eléctrico = ${if (esElectrico) { return "Sí" } else { return "No" }}," +
-                "Británico = ${if (condicionBritania) { return "Sí" } else { return "No" }})"
+                " ${kilometrosActuales}km, Tipo = $tipo, Eléctrico = ${if (esElectrico) { println("Sí") } else { println("No") }}," +
+                " Británico = ${if (condicionBritania) { println("Sí") } else { println("No") }})"
     }
 
     override fun calcularAutonomia(): Int {
@@ -25,9 +25,8 @@ class Automovil (marca: String,
 
     fun realizarDerrape(): Float {
         val kilometrosRecorribles = calcularAutonomia()
-        if (5 <= kilometrosRecorribles) {
-            kilometrosActuales += 5
-            val kilometrosRecorridos = kilometrosRecorribles - 5
+        if (DERRAPE <= kilometrosRecorribles) {
+            val kilometrosRecorridos = kilometrosRecorribles - DERRAPE
             return if (esElectrico) {
                 combustibleActual -= (kilometrosRecorridos / 5)
                 println("Derrape realizado con exito.")
@@ -39,9 +38,8 @@ class Automovil (marca: String,
             }
         }
         else {
-            val kilometrosRestantes = 5 - kilometrosRecorribles
-            val kilometrosRecorridos = 5 - kilometrosRestantes
-            kilometrosActuales += kilometrosRecorridos
+            val kilometrosRestantes = DERRAPE - kilometrosRecorribles
+            val kilometrosRecorridos = DERRAPE - kilometrosRestantes
             return if (esElectrico) {
                 combustibleActual -= (kilometrosRecorridos / 5)
                 println("Derrape no completado.")
@@ -60,5 +58,7 @@ class Automovil (marca: String,
         fun cambiarCondicionBritania(nuevaCondicion: Boolean) {
             condicionBritania = nuevaCondicion
         }
+
+        const val DERRAPE = 5
     }
 }

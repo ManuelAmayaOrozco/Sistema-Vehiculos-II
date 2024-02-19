@@ -18,38 +18,39 @@ class Motocicleta(marca: String,
 
     override fun realizaViaje(distancia: Int): Int {
         val kilometrosRecorribles = calcularAutonomia()
-        if (distancia <= kilometrosRecorribles) {
+        return if (distancia <= kilometrosRecorribles) {
             kilometrosActuales += distancia
             val kilometrosRecorridos = kilometrosRecorribles - distancia
             combustibleActual -= (kilometrosRecorridos / 20)
             println("Viaje realizado con exito.")
-            return 0
-        }
-        else {
+            0
+        } else {
             val kilometrosRestantes = distancia - kilometrosRecorribles
             val kilometrosRecorridos = distancia - kilometrosRestantes
             kilometrosActuales += kilometrosRecorridos
             combustibleActual -= (kilometrosRecorridos / 20)
             println("Viaje no completado. (Distancia restante = ${kilometrosRestantes}km")
-            return kilometrosRestantes
+            kilometrosRestantes
         }
     }
 
     fun realizarCaballito(): Float {
         val kilometrosRecorribles = calcularAutonomia()
-        return if (5 <= kilometrosRecorribles) {
-            kilometrosActuales += 5
-            val kilometrosRecorridos = kilometrosRecorribles - 5
+        return if (CABALLITO <= kilometrosRecorribles) {
+            val kilometrosRecorridos = kilometrosRecorribles - CABALLITO
             combustibleActual -= (kilometrosRecorridos / 20)
             println("Caballito realizado con exito.")
             combustibleActual
         } else {
-            val kilometrosRestantes = 5 - kilometrosRecorribles
-            val kilometrosRecorridos = 5 - kilometrosRestantes
-            kilometrosActuales += kilometrosRecorridos
+            val kilometrosRestantes = CABALLITO - kilometrosRecorribles
+            val kilometrosRecorridos = CABALLITO - kilometrosRestantes
             combustibleActual -= (kilometrosRecorridos / 20)
             println("Caballito no completado.")
             combustibleActual
         }
+    }
+
+    companion object {
+        const val CABALLITO = 5
     }
 }
