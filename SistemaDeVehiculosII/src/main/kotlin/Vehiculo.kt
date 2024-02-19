@@ -1,4 +1,4 @@
-open class Vehiculo (val marca: String,
+abstract class Vehiculo (val marca: String,
                      val modelo: String,
                      val capacidadCombustible: Float,
                      var combustibleActual: Float,
