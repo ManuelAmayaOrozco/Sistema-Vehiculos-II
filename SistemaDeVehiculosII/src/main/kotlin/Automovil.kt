@@ -24,6 +24,27 @@ class Automovil (nombre: String,
         }
     }
 
+    override fun realizaViaje(distancia: Int): Int {
+        if (esHibrido) {
+            val kilometrosRecorribles = calcularAutonomia()
+            return if (distancia <= kilometrosRecorribles) {
+                kilometrosActuales += distancia
+                val kilometrosRecorridos = kilometrosRecorribles - distancia
+                combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO_ELECTRICO)
+                0
+            } else {
+                val kilometrosRestantes = distancia - kilometrosRecorribles
+                val kilometrosRecorridos = distancia - kilometrosRestantes
+                kilometrosActuales += kilometrosRecorridos
+                combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO_ELECTRICO)
+                kilometrosRestantes
+            }
+        }
+        else {
+            return super.realizaViaje(distancia)
+        }
+    }
+
     fun realizarDerrape(): Float {
         val kilometrosRecorribles = calcularAutonomia()
         if (esHibrido) {
