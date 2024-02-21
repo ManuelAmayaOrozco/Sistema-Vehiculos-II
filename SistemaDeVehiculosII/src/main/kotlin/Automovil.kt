@@ -1,52 +1,52 @@
-class Automovil (marca: String,
+class Automovil (nombre: String,
+                 marca: String,
                  modelo: String,
                  capacidadCombustible: Float,
                  combustibleActual: Float,
                  kilometrosActuales: Int,
                  val tipo: String,
-                 val esElectrico: Boolean): Vehiculo(marca, modelo, capacidadCombustible, combustibleActual, kilometrosActuales) {
+                 val esHibrido: Boolean): Vehiculo(nombre, marca, modelo, capacidadCombustible, combustibleActual, kilometrosActuales) {
 
     override fun toString(): String {
         return "Automovil: (Marca = $marca, Modelo = $modelo, Capacidad Combustible = ${capacidadCombustible}l," +
                 " Combustible Actual = ${"%2f".format(combustibleActual)}l, Kilómetros Actuales =" +
-                " ${kilometrosActuales}km, Tipo = $tipo, Eléctrico = ${if (esElectrico) { println("Sí") } else { println("No") }}," +
+                " ${kilometrosActuales}km, Tipo = $tipo, Híbrido = ${if (esHibrido) { println("Sí") } else { println("No") }}," +
                 " Británico = ${if (condicionBritania) { println("Sí") } else { println("No") }})"
     }
 
     override fun calcularAutonomia(): Int {
-        return if (esElectrico) {
-            val autonomia = (capacidadCombustible * 5).toInt()
+        return if (esHibrido) {
+            val autonomia = (capacidadCombustible * KILOMETRO_POR_LITRO_ELECTRICO).toInt()
             autonomia
         } else {
-            val autonomia = (capacidadCombustible * 10).toInt()
+            val autonomia = (capacidadCombustible * KILOMETRO_POR_LITRO).toInt()
             autonomia
         }
     }
 
     fun realizarDerrape(): Float {
         val kilometrosRecorribles = calcularAutonomia()
-        if (DERRAPE <= kilometrosRecorribles) {
-            val kilometrosRecorridos = kilometrosRecorribles - DERRAPE
-            return if (esElectrico) {
-                combustibleActual -= (kilometrosRecorridos / 5)
-                println("Derrape realizado con exito.")
+        if (esHibrido) {
+            return if (DERRAPE_ELECTRICO <= kilometrosRecorribles) {
+                val kilometrosRecorridos = kilometrosRecorribles - DERRAPE_ELECTRICO
+                combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO_ELECTRICO)
                 combustibleActual
             } else {
-                combustibleActual -= (kilometrosRecorridos / 10)
-                println("Viaje realizado con exito.")
+                val kilometrosRestantes = DERRAPE_ELECTRICO - kilometrosRecorribles
+                val kilometrosRecorridos = DERRAPE_ELECTRICO - kilometrosRestantes
+                combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO_ELECTRICO)
                 combustibleActual
             }
         }
         else {
-            val kilometrosRestantes = DERRAPE - kilometrosRecorribles
-            val kilometrosRecorridos = DERRAPE - kilometrosRestantes
-            return if (esElectrico) {
-                combustibleActual -= (kilometrosRecorridos / 5)
-                println("Derrape no completado.")
+            return if (DERRAPE_NORMAL <= kilometrosRecorribles) {
+                val kilometrosRecorridos = kilometrosRecorribles - DERRAPE_NORMAL
+                combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO)
                 combustibleActual
             } else {
-                combustibleActual -= (kilometrosRecorridos / 10)
-                println("Derrape no completado.")
+                val kilometrosRestantes = DERRAPE_NORMAL - kilometrosRecorribles
+                val kilometrosRecorridos = DERRAPE_NORMAL - kilometrosRestantes
+                combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO)
                 combustibleActual
             }
         }
@@ -59,6 +59,8 @@ class Automovil (marca: String,
             condicionBritania = nuevaCondicion
         }
 
-        const val DERRAPE = 5
+        const val DERRAPE_ELECTRICO = 6.25f
+        const val DERRAPE_NORMAL = 7.5f
+        const val KILOMETRO_POR_LITRO_ELECTRICO = 15f
     }
 }

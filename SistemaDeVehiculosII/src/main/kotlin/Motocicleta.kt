@@ -1,9 +1,14 @@
-class Motocicleta(marca: String,
+class Motocicleta(nombre: String,
+                  marca: String,
                   modelo: String,
                   capacidadCombustible: Float,
                   combustibleActual: Float,
                   kilometrosActuales: Int,
-                  val cilindrada: Int): Vehiculo(marca, modelo, capacidadCombustible, combustibleActual, kilometrosActuales) {
+                  val cilindrada: Int): Vehiculo(nombre, marca, modelo, capacidadCombustible, combustibleActual, kilometrosActuales) {
+
+    init {
+        require(cilindrada in 125..1000)
+    }
 
     override fun toString(): String {
         return "Motocicleta: (Marca = $marca, Modelo = $modelo, Capacidad Combustible = ${capacidadCombustible}l, " +
@@ -12,8 +17,12 @@ class Motocicleta(marca: String,
     }
 
     override fun calcularAutonomia(): Int {
-        val autonomia = (capacidadCombustible * 20).toInt()
-        return autonomia
+        return if (cilindrada == 1000) {
+            (capacidadCombustible * KILOMETRO_POR_LITRO_MOTO).toInt()
+        } else {
+            val resta = cilindrada / 1000
+            (capacidadCombustible * (KILOMETRO_POR_LITRO_MOTO - resta)).toInt()
+        }
     }
 
     override fun realizaViaje(distancia: Int): Int {
@@ -21,15 +30,13 @@ class Motocicleta(marca: String,
         return if (distancia <= kilometrosRecorribles) {
             kilometrosActuales += distancia
             val kilometrosRecorridos = kilometrosRecorribles - distancia
-            combustibleActual -= (kilometrosRecorridos / 20)
-            println("Viaje realizado con exito.")
+            combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO_MOTO)
             0
         } else {
             val kilometrosRestantes = distancia - kilometrosRecorribles
             val kilometrosRecorridos = distancia - kilometrosRestantes
             kilometrosActuales += kilometrosRecorridos
-            combustibleActual -= (kilometrosRecorridos / 20)
-            println("Viaje no completado. (Distancia restante = ${kilometrosRestantes}km")
+            combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO_MOTO)
             kilometrosRestantes
         }
     }
@@ -38,19 +45,18 @@ class Motocicleta(marca: String,
         val kilometrosRecorribles = calcularAutonomia()
         return if (CABALLITO <= kilometrosRecorribles) {
             val kilometrosRecorridos = kilometrosRecorribles - CABALLITO
-            combustibleActual -= (kilometrosRecorridos / 20)
-            println("Caballito realizado con exito.")
+            combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO_MOTO)
             combustibleActual
         } else {
             val kilometrosRestantes = CABALLITO - kilometrosRecorribles
             val kilometrosRecorridos = CABALLITO - kilometrosRestantes
-            combustibleActual -= (kilometrosRecorridos / 20)
-            println("Caballito no completado.")
+            combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO_MOTO)
             combustibleActual
         }
     }
 
     companion object {
-        const val CABALLITO = 5
+        const val CABALLITO = 6.5F
+        const val KILOMETRO_POR_LITRO_MOTO = 20f
     }
 }
