@@ -3,14 +3,13 @@ class Automovil (nombre: String,
                  modelo: String,
                  capacidadCombustible: Float,
                  combustibleActual: Float,
-                 kilometrosActuales: Int,
-                 val tipo: String,
+                 kilometrosActuales: Float,
                  val esHibrido: Boolean): Vehiculo(nombre, marca, modelo, capacidadCombustible, combustibleActual, kilometrosActuales) {
 
     override fun toString(): String {
         return "Automovil: (Marca = $marca, Modelo = $modelo, Capacidad Combustible = ${capacidadCombustible}l," +
                 " Combustible Actual = ${"%2f".format(combustibleActual)}l, Kilómetros Actuales =" +
-                " ${kilometrosActuales}km, Tipo = $tipo, Híbrido = ${if (esHibrido) { println("Sí") } else { println("No") }}," +
+                " ${kilometrosActuales}km, Híbrido = ${if (esHibrido) { println("Sí") } else { println("No") }}," +
                 " Británico = ${if (condicionBritania) { println("Sí") } else { println("No") }})"
     }
 
@@ -24,14 +23,14 @@ class Automovil (nombre: String,
         }
     }
 
-    override fun realizaViaje(distancia: Int): Int {
+    override fun realizaViaje(distancia: Float): Float {
         if (esHibrido) {
             val kilometrosRecorribles = calcularAutonomia()
             return if (distancia <= kilometrosRecorribles) {
                 kilometrosActuales += distancia
                 val kilometrosRecorridos = kilometrosRecorribles - distancia
                 combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO_ELECTRICO)
-                0
+                0f
             } else {
                 val kilometrosRestantes = distancia - kilometrosRecorribles
                 val kilometrosRecorridos = distancia - kilometrosRestantes

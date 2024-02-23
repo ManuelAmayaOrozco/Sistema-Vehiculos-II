@@ -3,7 +3,7 @@ abstract class Vehiculo (val nombre: String,
                      val modelo: String,
                      val capacidadCombustible: Float,
                      var combustibleActual: Float = capacidadCombustible,
-                     var kilometrosActuales: Int = 0) {
+                     var kilometrosActuales: Float = 0f) {
 
     init {
         require(nombre.lowercase() !in listaNombres) { "El nombre no puede ser repetido." }
@@ -20,13 +20,13 @@ abstract class Vehiculo (val nombre: String,
         return "El vehículo puede recorrer ${calcularAutonomia()}km actualmente."
     }
 
-    open fun realizaViaje(distancia: Int): Int {
+    open fun realizaViaje(distancia: Float): Float {
         val kilometrosRecorribles = calcularAutonomia()
         return if (distancia <= kilometrosRecorribles) {
             kilometrosActuales += distancia
             val kilometrosRecorridos = kilometrosRecorribles - distancia
             combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO)
-            0
+            0f
         } else {
             val kilometrosRestantes = distancia - kilometrosRecorribles
             val kilometrosRecorridos = distancia - kilometrosRestantes

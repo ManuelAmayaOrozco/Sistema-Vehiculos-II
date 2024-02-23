@@ -3,7 +3,7 @@ class Motocicleta(nombre: String,
                   modelo: String,
                   capacidadCombustible: Float,
                   combustibleActual: Float,
-                  kilometrosActuales: Int,
+                  kilometrosActuales: Float,
                   val cilindrada: Int): Vehiculo(nombre, marca, modelo, capacidadCombustible, combustibleActual, kilometrosActuales) {
 
     init {
@@ -25,13 +25,13 @@ class Motocicleta(nombre: String,
         }
     }
 
-    override fun realizaViaje(distancia: Int): Int {
+    override fun realizaViaje(distancia: Float): Float {
         val kilometrosRecorribles = calcularAutonomia()
         return if (distancia <= kilometrosRecorribles) {
             kilometrosActuales += distancia
             val kilometrosRecorridos = kilometrosRecorribles - distancia
             combustibleActual -= (kilometrosRecorridos / KILOMETRO_POR_LITRO_MOTO)
-            0
+            0f
         } else {
             val kilometrosRestantes = distancia - kilometrosRecorribles
             val kilometrosRecorridos = distancia - kilometrosRestantes
