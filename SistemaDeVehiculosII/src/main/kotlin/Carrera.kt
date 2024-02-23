@@ -24,6 +24,7 @@ class Carrera(val nombreCarrera: String,
         while (estadoCarrera) {
             for (vehiculo in participantes) {
                 avanzarVehiculo(vehiculo)
+                actualizarPosiciones()
                 determinarGanador()
                 if (vehiculo.kilometrosActuales >= distanciaTotal) {
                     println("EL GANADOR ES ${vehiculo.nombre}!!!")
@@ -43,7 +44,7 @@ class Carrera(val nombreCarrera: String,
         }
     }
 
-    fun avanzarTramo(vehiculo: Vehiculo, kmTramo: Float) {
+    private fun avanzarTramo(vehiculo: Vehiculo, kmTramo: Float) {
 
 
         //Utilizar  distanciaNorecorrida = vehiculo.realizaViaje()
@@ -53,13 +54,14 @@ class Carrera(val nombreCarrera: String,
              //registrarAccion(L repostados)
         if (distanciaNoRecorrida == 0f) {
             repostarVehiculo(vehiculo, 0f)
+            actualizarParadas(vehiculo)
         }
 
         //registrarAccion(km avanzados)
         registrarAccion(vehiculo.nombre, "${vehiculo.nombre} recorre un tramo de ${kmTramo}km.")
     }
 
-    fun avanzarVehiculo(vehiculo: Vehiculo) {
+    private fun avanzarVehiculo(vehiculo: Vehiculo) {
         val distancia = Random.nextInt(10, 201)
         //11 -> 1 tramo: 11
         //45 -> 3 tramos: 20+fil(1 o 2)+20+fil(1 o 2)+5
@@ -98,12 +100,12 @@ class Carrera(val nombreCarrera: String,
         //Al final : registrarAccion(km recorridos)
     }
 
-    fun repostarVehiculo(vehiculo: Vehiculo, cantidad: Float) {
+    private fun repostarVehiculo(vehiculo: Vehiculo, cantidad: Float) {
         val cantidadRepostada = vehiculo.repostar(cantidad)
         registrarAccion(vehiculo.nombre, "${vehiculo.nombre} ha repostado ${cantidadRepostada}l.")
     }
 
-    fun realizarFiligrana(vehiculo: Vehiculo) {
+    private fun realizarFiligrana(vehiculo: Vehiculo) {
         val eleccion = Random.nextInt(0, 2)
         if (eleccion == 1) {
             if(vehiculo is Automovil) {
@@ -117,7 +119,7 @@ class Carrera(val nombreCarrera: String,
         }
     }
 
-    fun actualizarPosiciones() {
+    private fun actualizarPosiciones() {
         val listaPos = mutableListOf<Pair<String,Float>>()
         for (vehiculo in participantes) {
             listaPos.add(Pair(vehiculo.nombre, vehiculo.kilometrosActuales))
@@ -136,7 +138,7 @@ class Carrera(val nombreCarrera: String,
         }
     }
 
-    fun actualizarParadas(vehiculo: Vehiculo) {
+    private fun actualizarParadas(vehiculo: Vehiculo) {
         val encVehiculo = paradasRepostaje.find { it.first == vehiculo.nombre }
         val posVehiculo = paradasRepostaje.indexOfFirst { it.first == vehiculo.nombre }
         var paradasActuales = encVehiculo?.second
@@ -146,11 +148,11 @@ class Carrera(val nombreCarrera: String,
         }
     }
 
-    fun registrarAccion(vehiculo: String, accion: String) {
+    private fun registrarAccion(vehiculo: String, accion: String) {
         historialAcciones[vehiculo]?.add(accion)
     }
 
-    fun determinarGanador() {
+    private fun determinarGanador() {
         for (vehiculo in participantes) {
             if (vehiculo.kilometrosActuales >= distanciaTotal) {
                 estadoCarrera = false
@@ -159,8 +161,8 @@ class Carrera(val nombreCarrera: String,
     }
 
 
-    fun obtenerResultados(): MutableList<ResultadoCarrera> {
-        var listaResultados = mutableListOf<ResultadoCarrera>()
+    private fun obtenerResultados(): MutableList<ResultadoCarrera> {
+        val listaResultados = mutableListOf<ResultadoCarrera>()
         for (vehiculo in participantes) {
             val posicion = (posiciones.find { it.first == vehiculo.nombre })!!.second
             val historialAcciones = historialAcciones[vehiculo.nombre]!!
