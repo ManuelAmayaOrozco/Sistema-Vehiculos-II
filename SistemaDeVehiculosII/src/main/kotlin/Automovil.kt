@@ -1,3 +1,16 @@
+/**
+ * Clase derivada de la clase [Vehiculo], usada únicamente para coches y otros automóviles.
+ *
+ * @param nombre El nombre del automovil.
+ * @param marca La marca del automovil.
+ * @param modelo El modelo del automovil.
+ * @param capacidadCombustible La capacidad máxima de combustible que puede tener
+ * el automovil.
+ * @param combustibleActual El combustible que tiene actualmente el automovil.
+ * @param kilometrosActuales La cantidad de kilometros recorridos por el automovil.
+ * @param esHibrido Indica si el automovil es híbrido (true) o no (false).
+ * @param condicionBritania Indica si el automovil conduce por la izquierda o la derecha.
+ */
 class Automovil (nombre: String,
                  marca: String,
                  modelo: String,
@@ -13,6 +26,13 @@ class Automovil (nombre: String,
                 " Británico = ${if (condicionBritania) { println("Sí") } else { println("No") }})"
     }
 
+    /**
+     * Función que calcula la autonomía del automovil, para saber cuantos kilómetros
+     * es capaz de recorrer actualmente. Si es híbrido, se utilizará otro valor para
+     * calcular su autonomía.
+     *
+     * @return La autonomía del automovil.
+     */
     override fun calcularAutonomia(): Int {
         return if (esHibrido) {
             val autonomia = (capacidadCombustible * KILOMETRO_POR_LITRO_ELECTRICO).toInt()
@@ -23,6 +43,15 @@ class Automovil (nombre: String,
         }
     }
 
+    /**
+     * Función que hace que el automovil avance la distancia indicada, devolviendo los
+     * kilometros restantes para finalizar el viaje. Si no tiene combustible suficiente
+     * para finalizar el viaje, tendrá que repostar. Los kilómetros recorridos se añaden
+     * a su contador. Si es híbrido se utilizarán valores distintos para calcular su combustible.
+     *
+     * @param distancia La distancia a recorrer.
+     * @return Los kilómetros restantes por recorrer.
+     */
     override fun realizaViaje(distancia: Float): Float {
         if (esHibrido) {
             val kilometrosRecorribles = calcularAutonomia()
@@ -44,6 +73,14 @@ class Automovil (nombre: String,
         }
     }
 
+    /**
+     * Función en el que el automovil realiza una filigrana, en este caso un derrape.
+     * Sirve para gastar combustible más que nada. Si es híbrido se utilizarán otros
+     * valores para calcular su combustible. Devuelve el combustible actual tras la
+     * filigrana.
+     *
+     * @return Combustible actual tras la filigrana.
+     */
     fun realizarDerrape(): Float {
         val kilometrosRecorribles = calcularAutonomia()
         if (esHibrido) {
@@ -75,6 +112,11 @@ class Automovil (nombre: String,
     companion object {
         var condicionBritania: Boolean = false
 
+        /**
+         * Función que cambia [condicionBritania] para todos los coches.
+         *
+         * @param True para activar la condición, y false para desactivarla.
+         */
         fun cambiarCondicionBritania(nuevaCondicion: Boolean) {
             condicionBritania = nuevaCondicion
         }

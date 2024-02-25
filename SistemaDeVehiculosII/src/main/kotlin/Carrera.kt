@@ -1,5 +1,22 @@
 import kotlin.random.Random
 
+
+/**
+ * Clase que representa la simulación de la carrera en sí.
+ *
+ * @property nombreCarrera El nombre proporcionado a la carrera.
+ * @property distanciaTotal La distancia total que han de recorrer los vehiculos para
+ * finalizar la carrera.
+ * @property participantes Lista de elementos de la clase [Vehiculo] que son los
+ * diferentes vehiculos que participaran en la carrera.
+ * @property estadoCarrera El estado actual de la carrera siendo true cuando está
+ * activa y false cuando termina.
+ * @property historialAcciones El historial de todas las acciones de cada vehículo.
+ * @property posiciones Lista de todos los nombres de los vehiculos y sus posiciones
+ * actuales.
+ * @property paradasRepostaje Lista de todos los nombres de los vehiculos y la cantidad
+ * de veces que ha repostado cada uno.
+ */
 class Carrera(val nombreCarrera: String,
               val distanciaTotal: Float,
               val participantes: List<Vehiculo>) {
@@ -13,11 +30,20 @@ class Carrera(val nombreCarrera: String,
     var paradasRepostaje: MutableList<Pair<String, Int>> = mutableListOf<Pair<String, Int>>()
 
 
+    /**
+     * Función que simula la carrera en sí. Comienza inicializando el historial,
+     * las posiciones y las paradas, para despues comenzar la carrera, llamando
+     * uno a uno a cada vehiculo, haciendo que avancen, se actulicen las posiciones y
+     * se determine el ganador en caso de victoria. Al final se muestran todos los resultados
+     * obtenidos de cada participante.
+     */
     fun iniciarCarrera() {
         estadoCarrera = true
+        var countPos = 1
         for (vehiculo in participantes) {
             historialAcciones[vehiculo.nombre] = mutableListOf<String>()
-            posiciones.add(Pair(vehiculo.nombre, 0))
+            posiciones.add(Pair(vehiculo.nombre, countPos))
+            countPos++
             paradasRepostaje.add(Pair(vehiculo.nombre, 0))
         }
 
@@ -44,6 +70,14 @@ class Carrera(val nombreCarrera: String,
         }
     }
 
+    /**
+     * Funcion que avanza el tramo proporcionado por la funcion [avanzarVehiculo],
+     * si necesita repostar tambien llamará a la función [repostarVehiculo] y actualizará
+     * el número de paradas.
+     *
+     * @param vehiculo El vehiculo elegido para avanzar el tramo.
+     * @param kmTramo Los kilometros del tramo a avanzar.
+     */
     private fun avanzarTramo(vehiculo: Vehiculo, kmTramo: Float) {
 
 
@@ -51,9 +85,9 @@ class Carrera(val nombreCarrera: String,
         val distanciaNoRecorrida = vehiculo.realizaViaje(kmTramo)
 
         //Si no pudo realizar toda la distancia => repostar()
-             //registrarAccion(L repostados)
+        //registrarAccion(L repostados)
         if (distanciaNoRecorrida == 0f) {
-            repostarVehiculo(vehiculo, 0f)
+            repostarVehiculo(vehiculo)
             actualizarParadas(vehiculo)
         }
 
@@ -61,6 +95,14 @@ class Carrera(val nombreCarrera: String,
         registrarAccion(vehiculo.nombre, "${vehiculo.nombre} recorre un tramo de ${kmTramo}km.")
     }
 
+    /**
+     * Función que avanza el vehículo una distancia aleatoria entre 10 y 200km, separando
+     * dicha distancia entre tramos que serán recorridos en [avanzarTramo], dicha acción
+     * será registrada en el historial; cada 20km el vehiculo intentará realizar una o
+     * dos filigranas que gastarán combustible.
+     *
+     * @param vehiculo El vehículo que avanzará la distancia elegida.
+     */
     private fun avanzarVehiculo(vehiculo: Vehiculo) {
         val distancia = Random.nextInt(10, 201)
         //11 -> 1 tramo: 11
@@ -100,11 +142,22 @@ class Carrera(val nombreCarrera: String,
         //Al final : registrarAccion(km recorridos)
     }
 
-    private fun repostarVehiculo(vehiculo: Vehiculo, cantidad: Float) {
-        val cantidadRepostada = vehiculo.repostar(cantidad)
+    /**
+     * Función que se encarga de repostar el vehículo elegido, registrándolo en el historial.
+     *
+     * @param vehiculo El vehículo elegido para ser repostado.
+     */
+    private fun repostarVehiculo(vehiculo: Vehiculo) {
+        val cantidadRepostada = vehiculo.repostar()
         registrarAccion(vehiculo.nombre, "${vehiculo.nombre} ha repostado ${cantidadRepostada}l.")
     }
 
+    /**
+     * Función que hace que el vehículo realice (o no) una filigrana aleatoriamente,
+     * registrándola en el historial del vehículo.
+     *
+     * @param vehiculo El vehículo elegido para realizar la filigrana.
+     */
     private fun realizarFiligrana(vehiculo: Vehiculo) {
         val eleccion = Random.nextInt(0, 2)
         if (eleccion == 1) {
@@ -119,6 +172,11 @@ class Carrera(val nombreCarrera: String,
         }
     }
 
+    /**
+     * Función que actualiza las posiciones actuales de todos los vehiculos, creando
+     * una lista de posiciones actuales basándolas en los kilometros recorridos, y después
+     * asignando cada posición a los vehículos correspondientes.
+     */
     private fun actualizarPosiciones() {
         val listaPos = mutableListOf<Pair<String,Float>>()
         for (vehiculo in participantes) {
@@ -138,6 +196,11 @@ class Carrera(val nombreCarrera: String,
         }
     }
 
+    /**
+     * Función que actualiza el número de paradas de un vehículo específico.
+     *
+     * @param vehiculo El vehículo elegido para ser actualizado.
+     */
     private fun actualizarParadas(vehiculo: Vehiculo) {
         val encVehiculo = paradasRepostaje.find { it.first == vehiculo.nombre }
         val posVehiculo = paradasRepostaje.indexOfFirst { it.first == vehiculo.nombre }
@@ -148,10 +211,21 @@ class Carrera(val nombreCarrera: String,
         }
     }
 
+    /**
+     * Función que registra una acción en el historial de acciones de un vehiculo.
+     *
+     * @param vehiculo El nombre del vehiculo elegido.
+     * @param accion El texto que será añadido al historial de acciones.
+     */
     private fun registrarAccion(vehiculo: String, accion: String) {
         historialAcciones[vehiculo]?.add(accion)
     }
 
+    /**
+     * Función que determina cuando aparece el ganador, mirando todos los vehiculos
+     * para comprobar que se ha cumplido la condición de victoria. Una vez ocurra,
+     * el [estadoCarrera] será falso, indicando el fin de la carrera.
+     */
     private fun determinarGanador() {
         for (vehiculo in participantes) {
             if (vehiculo.kilometrosActuales >= distanciaTotal) {
@@ -160,7 +234,12 @@ class Carrera(val nombreCarrera: String,
         }
     }
 
-
+    /**
+     * Función que obtiene una lista completa de todos los resultados de cada participante
+     * tras el fin de la carrera, devolviendo dicha lista para que pueda ser impresa.
+     *
+     * @return La lista completa de todos los resultados.
+     */
     private fun obtenerResultados(): MutableList<ResultadoCarrera> {
         val listaResultados = mutableListOf<ResultadoCarrera>()
         for (vehiculo in participantes) {
