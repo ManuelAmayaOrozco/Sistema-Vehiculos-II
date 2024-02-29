@@ -8,7 +8,7 @@ fun main() {
 
     val listaVehiculos = mutableListOf<Vehiculo>(aurora, boreal, cefiro, dinamo, eclipse, fenix)
 
-    val carrera = Carrera("Carrera", 100.0f, listaVehiculos)
+    val carrera = Carrera("Carrera", 1000.0f, listaVehiculos)
 
     println(carrera.iniciarCarrera())
 }

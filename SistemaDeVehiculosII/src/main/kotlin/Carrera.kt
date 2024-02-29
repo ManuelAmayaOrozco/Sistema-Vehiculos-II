@@ -48,13 +48,12 @@ class Carrera(val nombreCarrera: String,
         }
 
         while (estadoCarrera) {
-            for (vehiculo in participantes) {
-                avanzarVehiculo(vehiculo)
-                actualizarPosiciones()
-                determinarGanador()
-                if (vehiculo.kilometrosActuales >= distanciaTotal) {
-                    println("EL GANADOR ES ${vehiculo.nombre}!!!")
-                }
+            val vehiculo = participantes.random()
+            avanzarVehiculo(vehiculo)
+            actualizarPosiciones()
+            determinarGanador()
+            if (vehiculo.kilometrosActuales >= distanciaTotal) {
+                println("EL GANADOR ES ${vehiculo.nombre}!!!")
             }
         }
 
@@ -95,6 +94,17 @@ class Carrera(val nombreCarrera: String,
         registrarAccion(vehiculo.nombre, "${vehiculo.nombre} recorre un tramo de ${kmTramo}km.")
     }
 
+    private fun obtenerTotalTramos(distancia: Float): Int {
+        var cantidadTramos = (distancia.toInt() / 20)
+
+        //Calcular kmtramo y restar distancia
+        val distanciaTramoRestante = distancia - (20 * cantidadTramos)
+
+        if (distanciaTramoRestante > 0) cantidadTramos++
+
+        return cantidadTramos
+    }
+
     /**
      * Función que avanza el vehículo una distancia aleatoria entre 10 y 200km, separando
      * dicha distancia entre tramos que serán recorridos en [avanzarTramo], dicha acción
@@ -104,15 +114,12 @@ class Carrera(val nombreCarrera: String,
      * @param vehiculo El vehículo que avanzará la distancia elegida.
      */
     private fun avanzarVehiculo(vehiculo: Vehiculo) {
-        val distancia = Random.nextInt(10, 201)
+        var distancia = Random.nextInt(10, 201).toFloat()
         //11 -> 1 tramo: 11
         //45 -> 3 tramos: 20+fil(1 o 2)+20+fil(1 o 2)+5
 
-        //Calcular tramos
-        val cantidadTramos = (distancia / 20)
-
-        //Calcular kmtramo y restar distancia
-        val distanciaTramoRestante = distancia - (20 * cantidadTramos - 1)
+        //Calcular tramos y distancia del tramo restante
+        var cantidadTramos = obtenerTotalTramos(distancia)
 
         //registrarAccion(kmtotales a recorrer)
         registrarAccion(vehiculo.nombre, "${vehiculo.nombre} realiza un viaje de ${distancia}km.")
@@ -129,8 +136,10 @@ class Carrera(val nombreCarrera: String,
                     realizarFiligrana(vehiculo)
                 }
             } else {
-                avanzarTramo(vehiculo, (distanciaTramoRestante).toFloat())
+                avanzarTramo(vehiculo, (distancia).toFloat())
             }
+            cantidadTramos--
+            distancia -= 20f
         }
 
         //avanzartramo()
